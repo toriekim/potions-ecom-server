@@ -7,7 +7,10 @@ const seed = async () => {
   logger.info('********** Starting connection to Data Source... **********')
   await AppDataSource.initialize()
   logger.info('********** Data Source successfully initialized! **********')
+
+  logger.info('********** Starting to seed db... **********')
   await runSeeders(AppDataSource)
+
   logger.info('********** Seeders successfully executed! **********')
   process.exit()
 }

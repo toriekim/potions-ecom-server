@@ -8,7 +8,7 @@ export default setSeederFactory(User, (faker) => {
   user.username = faker.internet.userName()
   user.email = faker.internet.email()
   user.password = faker.internet.password()
-  user.isAdmin = faker.datatype.boolean()
+  user.isAdmin = false
 
   return user
 })

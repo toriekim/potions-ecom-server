@@ -11,7 +11,7 @@
       "start": "ts-node src/index.ts",
       "typeorm": "typeorm-ts-node-commonjs",
       "migration": " npm run typeorm migration:run -- -d ./src/db.ts",
-      "seed": "ts-node src/configs/database/seed.ts",
+      "db:seed": "ts-node src/configs/database/seed.ts",
       "lint": "npx eslint . --ext .ts --fix",
       "format": "npx prettier . --write"
    },

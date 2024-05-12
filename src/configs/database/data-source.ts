@@ -7,15 +7,13 @@ const options: DataSourceOptions & SeederOptions = {
   type: 'postgres',
   host: 'localhost',
   port: 5432,
-  // username: 'test',
-  // password: 'test',
-  database: 'boilerplate-test',
+  database: 'potions-ecomm-db',
   synchronize: true,
   logging: false,
-  entities: [__dirname + '/../**/*.entity.{js,ts}'],
+  entities: ['src/entities/*.{js,ts}'],
   migrations: [__dirname + '/../migration/*.{js,ts}'],
-  seeds: ['src/configs/database/seeds/**/*{.ts,.js}'],
-  factories: ['src/configs/database/factories/**/*{.ts,.js}'],
+  seeds: ['src/configs/database/seeds/*.{js,ts}'],
+  factories: ['src/configs/database/factories/*.{js,ts}'],
   subscribers: []
 }
 
@@ -30,6 +28,8 @@ export const initializeDB = async () => {
     // Return db connection
     return AppDataSource
   } catch (error) {
-    logger.info('********** Error during Data Source initialization :( **********')
+    logger.info(
+      '********** Error during Data Source initialization :( **********'
+    )
   }
 }

@@ -4,10 +4,11 @@ import {
   Column,
   CreateDateColumn,
   UpdateDateColumn,
-  BeforeInsert,
-  DeleteDateColumn
+  OneToMany,
+  BeforeInsert
 } from 'typeorm'
 import { IsEmail } from 'class-validator'
+import { Order } from './Order.entity'
 import { encrypt } from '../utils/encrypt.util'
 
 @Entity({ name: 'users' })
@@ -40,10 +41,12 @@ export class User {
   @UpdateDateColumn()
   updatedAt: Date
 
-  @DeleteDateColumn()
-  deletedAt?: Date
+  // --- Relations ---
+  // A User has many Orders
+  @OneToMany(() => Order, (order) => order.user)
+  orders: Order[]
 
-  // Entity Listeners (Hooks)
+  // --- Entity Listeners (Hooks) ---
   @BeforeInsert()
   async hashPassword() {
     this.password = await encrypt.hashPassword(this.password)

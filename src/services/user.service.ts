@@ -67,7 +67,7 @@ export const remove = async (id: string) => {
   const userToDelete = await UserRepository.findOneBy({ id })
 
   if (!userToDelete) {
-    throw new HTTP404Error('User to update not found')
+    throw new HTTP404Error('User to delete not found')
   }
 
   const deletedUser = await UserRepository.createQueryBuilder()

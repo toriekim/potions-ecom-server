@@ -37,7 +37,7 @@ export const requireToken = async (
 }
 
 export const isAdmin = (req: Request, res: Response, next: NextFunction) => {
-  if (!req.user.isAdmin) {
+  if (!req.user?.isAdmin) {
     return res.status(403).send('User not authorized!')
   } else {
     // If user IS an admin, pass them forward!

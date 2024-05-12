@@ -1,6 +1,7 @@
 import { NextFunction, Request, Response } from 'express'
 import { HTTP403Error } from '../utils/httpError.util'
 import * as userService from '../services/user.service'
+import { User } from '../entities'
 
 async function get(req: Request, res: Response, next: NextFunction) {
   try {
@@ -24,7 +25,7 @@ async function getById(req: Request, res: Response, next: NextFunction) {
 async function update(req: Request, res: Response, next: NextFunction) {
   try {
     const { id } = req.params
-    const { id: reqUserId } = req.user
+    const { id: reqUserId } = req.user as User
     const { updateOptions } = req.body
 
     if (reqUserId !== id) {
@@ -42,7 +43,7 @@ async function update(req: Request, res: Response, next: NextFunction) {
 async function remove(req: Request, res: Response, next: NextFunction) {
   try {
     const { id } = req.params
-    const { id: reqUserId } = req.user
+    const { id: reqUserId } = req.user as User
 
     if (reqUserId === id) {
       throw new HTTP403Error('User cannot delete themself')

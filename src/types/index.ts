@@ -1,17 +1,3 @@
-import { Request, Response, NextFunction } from 'express'
-
-export type Handler = (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => Promise<void> | void
-
-export type Route = {
-  path: string
-  method: string
-  handler: Handler | Handler[]
-}
-
 export interface User {
   firstName: string
   lastName: string
@@ -28,4 +14,14 @@ export interface UserUpdateOptions {
   email?: string
   password?: string
   isAdmin?: boolean
+}
+
+export interface ProductUpdateOptions {
+  name?: string
+  description?: string
+  imageUrl?: string
+  quantity?: number
+  price?: number
+  prepTime?: number
+  country?: string
 }

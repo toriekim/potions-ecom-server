@@ -34,6 +34,13 @@ export class Product {
   @Min(0)
   price: number
 
+  @Column({ type: 'integer', nullable: false })
+  @Min(0)
+  prepTime: number // in minutes
+
+  @Column({ type: 'text' })
+  country: string
+
   @CreateDateColumn()
   createdAt: Date
 

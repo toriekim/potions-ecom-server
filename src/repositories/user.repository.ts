@@ -1,4 +1,4 @@
-import * as jwt from 'jsonwebtoken'
+import jwt, { JwtPayload } from 'jsonwebtoken'
 import { AppDataSource } from '../configs/database/data-source'
 import { User } from '../entities/User.entity'
 import { encrypt } from '../utils/encrypt.util'
@@ -28,7 +28,7 @@ export const UserRepository = AppDataSource.getRepository(User).extend({
 
   async findByToken(token: string) {
     try {
-      const { id } = jwt.verify(token, JWT_SECRET)
+      const { id } = jwt.verify(token, JWT_SECRET) as JwtPayload
       const user = await this.findOneBy({ id })
       if (!user) {
         throw new HTTP404Error(`User not found by token`)
@@ -41,7 +41,7 @@ export const UserRepository = AppDataSource.getRepository(User).extend({
 
   async hasToken(token: string) {
     try {
-      const { id } = jwt.verify(token, JWT_SECRET)
+      const { id } = jwt.verify(token, JWT_SECRET) as JwtPayload
       const user = await this.findOneBy(id)
       return user
     } catch (err) {

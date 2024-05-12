@@ -21,7 +21,7 @@ export class OrderedItem {
 
   // --- Relations ---
   // Many-to-Many relationship between Product and Order through OrderedItem
-  @ManyToOne(() => Product, (product) => product.orderedItems)
+  @ManyToOne(() => Product, (product) => product.orderedItems, { eager: true })
   @JoinColumn({ name: 'productId' })
   product: Product
 

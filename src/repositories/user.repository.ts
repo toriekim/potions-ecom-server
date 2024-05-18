@@ -16,7 +16,12 @@ export const UserRepository = AppDataSource.getRepository(User).extend({
 
   async authenticate(username: string, password: string) {
     try {
-      const user = await this.findOneBy({ username })
+      const user = await this.createQueryBuilder('user')
+        .select('user.id')
+        .addSelect('user.password')
+        .where('user.username = :username', { username })
+        .getOne()
+
       if (!user || !encrypt.comparePassword(password, user.password)) {
         throw new HTTP401Error(`Incorrect username or password`)
       }

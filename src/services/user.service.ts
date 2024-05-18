@@ -1,6 +1,6 @@
 import logger from '../configs/logger'
 import { encrypt } from '../utils/encrypt.util'
-import { HTTP404Error } from '../utils/httpError.util'
+import { HTTP400Error, HTTP404Error } from '../utils/httpError.util'
 import { User } from '../entities/User.entity'
 import { User as UserType, UserUpdateOptions } from '../types'
 import { UserRepository } from '../repositories/user.repository'
@@ -32,15 +32,26 @@ export const getById = async (id: string) => {
 }
 
 export const create = async (newUserInfo: UserType) => {
-  const hashedPassword = await encrypt.hashPassword(newUserInfo.password)
-
-  const newUser = await UserRepository.create({
-    ...newUserInfo,
-    password: hashedPassword
+  const userExists = await UserRepository.findOneBy({
+    email: newUserInfo.email
   })
-  const createdUser = await UserRepository.save(newUser)
 
-  logger.info('New user created: ', createdUser.id)
+  if (userExists) {
+    logger.info(`User with email ${userExists.email} already exists`)
+    throw new HTTP400Error(`User with email ${userExists.email} already exists`)
+  }
+
+  const hashedPassword = await encrypt.hashPassword(newUserInfo.password)
+  const {
+    raw: [createdUser]
+  } = await UserRepository.createQueryBuilder()
+    .insert()
+    .into(User)
+    .values({ ...newUserInfo, password: hashedPassword })
+    .returning('id, "firstName", "lastName", username, email, "isAdmin"')
+    .execute()
+
+  logger.info(`New user created: ${createdUser.id}`)
   const token = encrypt.generateToken({ id: createdUser.id })
   return { user: createdUser, token }
 }

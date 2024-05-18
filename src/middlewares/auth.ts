@@ -27,7 +27,7 @@ export const requireToken = async (
     if (!token) {
       throw new HTTP401Error('Bad token')
     }
-    const user = UserRepository.findByToken(token)
+    const user = await UserRepository.findByToken(token)
     req.user = user
     next() // Go to the next piece of middleware
   } catch (err) {

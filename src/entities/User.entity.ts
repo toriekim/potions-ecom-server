@@ -29,7 +29,7 @@ export class User {
   @IsEmail()
   email: string
 
-  @Column()
+  @Column({ select: false })
   password: string
 
   @Column({ default: false })
@@ -47,6 +47,7 @@ export class User {
   orders: Order[]
 
   // --- Entity Listeners (Hooks) ---
+  // TypeORM will call it before the entity is inserted using repository/manager save
   @BeforeInsert()
   async hashPassword() {
     this.password = await encrypt.hashPassword(this.password)

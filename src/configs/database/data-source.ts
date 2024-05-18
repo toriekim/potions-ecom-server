@@ -10,10 +10,10 @@ const options: DataSourceOptions & SeederOptions = {
   database: 'potions-ecomm-db',
   synchronize: true,
   logging: false,
-  entities: ['src/entities/*.{js,ts}'],
-  migrations: [__dirname + '/../migration/*.{js,ts}'],
-  seeds: ['src/configs/database/seeds/*.{js,ts}'],
-  factories: ['src/configs/database/factories/*.{js,ts}'],
+  entities: [__dirname + '/../../**/*.entity.{js,ts}'],
+  migrations: [__dirname + '/../../migration/*.{js,ts}'],
+  seeds: [__dirname + '/seeds/*.{js,ts}'],
+  factories: [__dirname + '/factories/*.{js,ts}'],
   subscribers: []
 }
 

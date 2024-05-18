@@ -53,11 +53,15 @@ export class Product {
 
   // --- Relations ---
   // Many-to-Many relationship between Product and Order through OrderItem
-  @OneToMany(() => OrderItem, (orderedItem) => orderedItem.product)
-  orderedItems: OrderItem[]
+  @OneToMany(() => OrderItem, (orderItem) => orderItem.product)
+  orderItems: OrderItem[]
 
   // Many-to-Many relationship between Product and Category
   @ManyToMany(() => Category, { eager: true })
-  @JoinTable()
+  @JoinTable({
+    name: 'productCategories',
+    joinColumn: { name: 'productId', referencedColumnName: 'id' },
+    inverseJoinColumn: { name: 'categoryId', referencedColumnName: 'id' }
+  })
   categories: Category[]
 }

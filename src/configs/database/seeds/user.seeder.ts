@@ -126,23 +126,23 @@ export default class UserSeeder implements Seeder {
     ])
 
     // Assign OrderItems to Orders
-    order1.orderedItems = [item1, item2, item3]
-    order2.orderedItems = [item4, item5]
-    order3.orderedItems = [item6]
-    order4.orderedItems = [item7]
-    order5.orderedItems = [item8, item9, item10]
+    order1.orderItems = [item1, item2, item3]
+    order2.orderItems = [item4, item5]
+    order3.orderItems = [item6]
+    order4.orderItems = [item7]
+    order5.orderItems = [item8, item9, item10]
 
     // Assign OrderItems to Products
-    paella.orderedItems = [item1]
-    som.orderedItems = [item2]
-    poutine.orderedItems = [item3]
-    tacos.orderedItems = [item4]
-    crab.orderedItems = [item5]
-    roll.orderedItems = [item6]
-    poke.orderedItems = [item7]
-    tarts.orderedItems = [item8]
-    pierogi.orderedItems = [item9]
-    chow.orderedItems = [item10]
+    paella.orderItems = [item1]
+    som.orderItems = [item2]
+    poutine.orderItems = [item3]
+    tacos.orderItems = [item4]
+    crab.orderItems = [item5]
+    roll.orderItems = [item6]
+    poke.orderItems = [item7]
+    tarts.orderItems = [item8]
+    pierogi.orderItems = [item9]
+    chow.orderItems = [item10]
 
     // Save all entities to the database
     await orderedItemRepository.save([

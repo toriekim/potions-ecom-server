@@ -57,8 +57,8 @@ export class Order {
   user: User
 
   // Many-to-Many relationship between Product and Order through OrderItem
-  @OneToMany(() => OrderItem, (orderedItem) => orderedItem.order, {
+  @OneToMany(() => OrderItem, (orderItem) => orderItem.order, {
     eager: true
   })
-  orderedItems: OrderItem[]
+  orderItems: OrderItem[]
 }

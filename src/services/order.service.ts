@@ -57,9 +57,15 @@ export const getUserCart = async (userId: string) => {
 
 export const deleteUserCart = async (userId: string) => {
   const cart = await OrderRepository.findCart(userId)
-  if (!cart) {
+  // If a Cart isn't found or it's not a Cart, throw error
+  if (!cart || cart.status !== CartStatus.CART) {
     throw new HTTP404Error(`Cart for User ${userId} not found`)
   }
+  // If User is not the owner of the Cart, throw error
+  if (userId !== cart.user.id) {
+    throw new HTTP403Error(`User ${userId} not authorized to delete cart`)
+  }
+  // Otherwise, delete the Cart & all items in it
   const deletedCart = await OrderRepository.delete(cart.id)
   if (!deletedCart.affected) {
     throw new HTTP404Error(`Cart for User ${userId} not deleted`)
@@ -71,24 +77,22 @@ export const deleteUserCart = async (userId: string) => {
 export const addProductToCart = async (
   userId: string,
   productId: string,
-  price: number
+  price: number,
+  qty: number
 ) => {
   const cart = await OrderRepository.findCart(userId)
   // If User doesn't have a cart, create one for them
   if (!cart) {
-    const newCart = await OrderRepository.createNewCart(userId, price)
+    const newCart = await OrderRepository.createNewCart(userId, price, qty)
     // Add the product by creating a new OrderItem
     const newCartItem = await OrderItemRepository.createItem(
       newCart.id,
       productId,
-      price
+      price,
+      qty
     )
     return newCartItem
   }
-  // Otherwise, User cart was found, increment total quantity & price
-  cart.totalQty += 1
-  cart.totalPrice += price
-  await OrderRepository.save(cart)
 
   // Check if the product is already in the cart
   const existingCartItem = await OrderItemRepository.findItem(
@@ -97,35 +101,32 @@ export const addProductToCart = async (
   )
   // If the product is not in the cart, create a new OrderItem
   if (!existingCartItem) {
-    const newCartItem = await OrderItemRepository.createItem(
-      cart.id,
-      productId,
-      price
-    )
-    return newCartItem
+    await OrderItemRepository.createItem(cart.id, productId, price, qty)
+  } else {
+    // If the product is already in the cart, increment the quantity
+    existingCartItem.itemQty += qty
+    await OrderItemRepository.save(existingCartItem)
   }
 
-  // If the product is already in the cart, increment the quantity
-  existingCartItem.itemQty += 1
-  existingCartItem.itemPrice += price
-  await OrderItemRepository.save(existingCartItem)
-  return existingCartItem
+  // Finally, increment Cart total quantity & price
+  cart.totalQty += qty
+  cart.totalPrice += price * qty
+  await OrderRepository.save(cart)
+
+  return cart
 }
 
 export const removeProductFromCart = async (
   userId: string,
   productId: string,
-  price: number
+  price: number,
+  qty: number
 ) => {
   const cart = await OrderRepository.findCart(userId)
 
   if (!cart) {
     throw new HTTP404Error(`Cart for User ${userId} not found`)
   }
-  // Otherwise, decrement product qty & price from cart's totals
-  cart.totalQty -= 1
-  cart.totalPrice -= price
-  await OrderRepository.save(cart)
 
   // Check if the product is already in the cart
   const existingCartItem = await OrderItemRepository.findItem(
@@ -136,41 +137,18 @@ export const removeProductFromCart = async (
   if (!existingCartItem) {
     throw new HTTP404Error(`Product with ID ${productId} not found in cart`)
   }
-  // If product qty is greater than 1, decrement the quantity
-  if (existingCartItem.itemQty > 1) {
-    existingCartItem.itemQty -= 1
-    await OrderItemRepository.save(existingCartItem)
-  } else {
-    // Otherwise, delete the OrderItem
+  // If there's only 1 cart item or input qty is greater than or equal to cart item qty, delete the OrderItem
+  if (existingCartItem.itemQty === 1 || qty >= existingCartItem.itemQty) {
     await OrderItemRepository.delete({ id: existingCartItem.id })
+    cart.totalQty -= existingCartItem.itemQty
+    cart.totalPrice -= price * existingCartItem.itemQty
+  } else {
+    // Otherwise, decrement the quantity
+    existingCartItem.itemQty -= qty
+    await OrderItemRepository.save(existingCartItem)
+    cart.totalQty -= qty
+    cart.totalPrice -= price * qty
   }
-  return existingCartItem
-}
-
-export const removeAllProductFromCart = async (
-  userId: string,
-  productId: string
-) => {
-  const cart = await OrderRepository.findCart(userId)
-  if (!cart) {
-    throw new HTTP404Error(`Cart for User ${userId} not found`)
-  }
-  // Otherwise, delete the OrderItem
-  const itemToDelete = await OrderItemRepository.findItem(cart.id, productId)
-  if (!itemToDelete) {
-    throw new HTTP404Error(`Product with ID ${productId} not found in cart`)
-  }
-  const deletedCartItem = await OrderItemRepository.delete({
-    id: itemToDelete.id
-  })
-
-  if (!deletedCartItem.affected) {
-    throw new HTTP404Error(
-      `Product(s) with ID ${productId} not deleted from cart`
-    )
-  }
-  cart.totalPrice -= itemToDelete.itemPrice * itemToDelete.itemQty
-  cart.totalQty -= itemToDelete.itemQty
   await OrderRepository.save(cart)
-  return deletedCartItem.affected
+  return cart
 }

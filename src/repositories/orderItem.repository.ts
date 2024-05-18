@@ -10,12 +10,17 @@ export const OrderItemRepository = AppDataSource.getRepository(
       where: { order: { id: orderId }, product: { id: productId } }
     })
   },
-  createItem(orderId: string, productId: string, price: number) {
+  createItem(
+    orderId: string,
+    productId: string,
+    itemPrice: number,
+    itemQty: number = 1
+  ) {
     return this.save({
       order: { id: orderId },
       product: { id: productId },
-      itemPrice: price,
-      itemQty: 1
+      itemPrice,
+      itemQty
     })
   }
 })

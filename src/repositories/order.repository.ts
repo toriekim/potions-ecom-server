@@ -4,10 +4,10 @@ import { CartStatus, Order } from '../entities/Order.entity'
 
 export const OrderRepository = AppDataSource.getRepository(Order).extend({
   // Create a new "cart" for the user
-  createNewCart(userId: string, itemPrice: number) {
+  createNewCart(userId: string, itemPrice: number, qty: number = 1) {
     return this.save({
-      totalPrice: itemPrice,
-      totalQty: 1,
+      totalPrice: itemPrice * qty,
+      totalQty: qty,
       recipient: '',
       shippingAddress: '',
       status: CartStatus.CART,

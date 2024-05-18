@@ -25,7 +25,9 @@ export const getById = async (id: string) => {
 export const create = async (productToCreate: Product) => {
   const newProduct = ProductRepository.create(productToCreate)
   const createdProduct = await ProductRepository.save(newProduct)
-  logger.info(`New product ${createdProduct.name} created: `, createdProduct.id)
+  logger.info(
+    `New product ${createdProduct.name} created: ${createdProduct.id}`
+  )
   return createdProduct
 }
 
@@ -40,6 +42,7 @@ export const update = async (id: string, updateObj: ProductUpdateOptions) => {
     .update(Product)
     .set(updateObj)
     .where('id = :id', { id })
+    .returning('*')
     .execute()
 
   logger.info(

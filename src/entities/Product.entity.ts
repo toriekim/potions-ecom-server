@@ -2,6 +2,7 @@ import { Min } from 'class-validator'
 import {
   Column,
   CreateDateColumn,
+  DeleteDateColumn,
   Entity,
   JoinTable,
   ManyToMany,
@@ -9,7 +10,7 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn
 } from 'typeorm'
-import { OrderedItem } from './OrderedItem.entity'
+import { OrderItem } from './OrderItem.entity'
 import { Category } from './Category.entity'
 
 @Entity({ name: 'products' })
@@ -47,13 +48,16 @@ export class Product {
   @UpdateDateColumn()
   updatedAt: Date
 
+  @DeleteDateColumn()
+  deletedAt: Date
+
   // --- Relations ---
-  // Many-to-Many relationship between Product and Order through OrderedItem
-  @OneToMany(() => OrderedItem, (orderedItem) => orderedItem.product)
-  orderedItems: OrderedItem[]
+  // Many-to-Many relationship between Product and Order through OrderItem
+  @OneToMany(() => OrderItem, (orderedItem) => orderedItem.product)
+  orderedItems: OrderItem[]
 
   // Many-to-Many relationship between Product and Category
-  @ManyToMany(() => Category)
+  @ManyToMany(() => Category, { eager: true })
   @JoinTable()
   categories: Category[]
 }

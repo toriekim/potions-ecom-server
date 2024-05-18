@@ -5,7 +5,8 @@ import {
   CreateDateColumn,
   UpdateDateColumn,
   OneToMany,
-  BeforeInsert
+  BeforeInsert,
+  DeleteDateColumn
 } from 'typeorm'
 import { IsEmail } from 'class-validator'
 import { Order } from './Order.entity'
@@ -40,6 +41,9 @@ export class User {
 
   @UpdateDateColumn()
   updatedAt: Date
+
+  @DeleteDateColumn()
+  deletedAt: Date
 
   // --- Relations ---
   // A User has many Orders

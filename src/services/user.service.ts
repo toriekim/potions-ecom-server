@@ -5,6 +5,7 @@ import { User } from '../entities/User.entity'
 import { User as UserType, UserUpdateOptions } from '../types'
 import { UserRepository } from '../repositories/user.repository'
 
+// ---------- User Auth Services ----------
 export const authenticate = (username: string, password: string) => {
   return UserRepository.authenticate(username, password)
 }
@@ -13,6 +14,7 @@ export const getMe = (token: string) => {
   return UserRepository.findByToken(token)
 }
 
+// ---------- User Services ----------
 export const getAll = async () => {
   const users = await UserRepository.find({
     select: ['id', 'firstName', 'lastName', 'username', 'email', 'isAdmin']
@@ -70,7 +72,7 @@ export const update = async (id: string, updateOptions: UserUpdateOptions) => {
     .returning('id, firstName, lastName, username, email, isAdmin')
     .execute()
 
-  logger.info('User updated successfully: ', updatedUser.raw[0].id)
+  logger.info(`User updated successfully: ${updatedUser.raw[0].id}`)
   return updatedUser.raw[0]
 }
 

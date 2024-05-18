@@ -9,7 +9,7 @@ import {
   UpdateDateColumn
 } from 'typeorm'
 import { User } from './User.entity'
-import { OrderedItem } from './OrderedItem.entity'
+import { OrderItem } from './OrderItem.entity'
 
 export enum CartStatus {
   CART = 'cart',
@@ -52,13 +52,13 @@ export class Order {
 
   // --- Relations ---
   // Many Orders belong to a User
-  @ManyToOne(() => User, (user) => user.orders)
+  @ManyToOne(() => User, (user) => user.orders, { eager: true })
   @JoinColumn({ name: 'userId' })
   user: User
 
-  // Many-to-Many relationship between Product and Order through OrderedItem
-  @OneToMany(() => OrderedItem, (orderedItem) => orderedItem.order, {
+  // Many-to-Many relationship between Product and Order through OrderItem
+  @OneToMany(() => OrderItem, (orderedItem) => orderedItem.order, {
     eager: true
   })
-  orderedItems: OrderedItem[]
+  orderedItems: OrderItem[]
 }

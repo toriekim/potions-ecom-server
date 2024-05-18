@@ -9,7 +9,7 @@ import { Order } from './Order.entity'
 import { Product } from './Product.entity'
 
 @Entity({ name: 'orderedItems' })
-export class OrderedItem {
+export class OrderItem {
   @PrimaryGeneratedColumn('uuid')
   id: string
 
@@ -20,7 +20,7 @@ export class OrderedItem {
   itemPrice: number
 
   // --- Relations ---
-  // Many-to-Many relationship between Product and Order through OrderedItem
+  // Many-to-Many relationship between Product and Order through OrderItem
   @ManyToOne(() => Product, (product) => product.orderedItems, { eager: true })
   @JoinColumn({ name: 'productId' })
   product: Product

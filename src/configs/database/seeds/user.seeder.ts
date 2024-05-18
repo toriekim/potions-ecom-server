@@ -1,6 +1,6 @@
 import { Seeder, SeederFactoryManager } from 'typeorm-extension'
 import { DataSource } from 'typeorm'
-import { Category, Order, OrderedItem, Product, User } from '../../../entities'
+import { Category, Order, OrderItem, Product, User } from '../../../entities'
 import { users } from '../seed-data/users'
 import { orders } from '../seed-data/order'
 import { products } from '../seed-data/products'
@@ -95,7 +95,7 @@ export default class UserSeeder implements Seeder {
     sushi.categories = [seafood, lunch, dinner, healthy]
 
     // Assign Products to Orders
-    const orderedItemRepository = dataSource.getRepository(OrderedItem)
+    const orderedItemRepository = dataSource.getRepository(OrderItem)
     const [
       item1,
       item2,
@@ -125,14 +125,14 @@ export default class UserSeeder implements Seeder {
       { itemQty: 1, itemPrice: 25 } // Chow
     ])
 
-    // Assign OrderedItems to Orders
+    // Assign OrderItems to Orders
     order1.orderedItems = [item1, item2, item3]
     order2.orderedItems = [item4, item5]
     order3.orderedItems = [item6]
     order4.orderedItems = [item7]
     order5.orderedItems = [item8, item9, item10]
 
-    // Assign OrderedItems to Products
+    // Assign OrderItems to Products
     paella.orderedItems = [item1]
     som.orderedItems = [item2]
     poutine.orderedItems = [item3]
